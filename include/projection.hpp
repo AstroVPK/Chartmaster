@@ -23,7 +23,7 @@ PolarPoint<T> Stereographic<T>::project(CelestialPoint<T> const pt) const {
     return PolarPoint(r, theta);
 }
 
-template <typename T, T ra0, T dec0, T dec1, T dec2>
+template <typename T, T ra0 = static_cast<T>(0.0), T dec0 = static_cast<T>(50.0), T dec1 = static_cast<T>(30.0), T dec2 = static_cast<T>(70.0)>
 class LambertConformal {
     private:
         T lambda0, phi0, phi1, phi2, n, F, rho0;
@@ -33,8 +33,6 @@ class LambertConformal {
         CartesianPoint<T> project(CelestialPoint<T> const pt);
 };
 
-
-//template <typename T, T ra0 = static_cast<T>(0.0), T dec0 = static_cast<T>(50.0), T dec1 = static_cast<T>(30.0), T dec2 = static_cast<T>(70.0)>
 template <typename T, T ra0, T dec0, T dec1, T dec2>
 LambertConformal<T, ra0, dec0, dec1, dec2>::LambertConformal() {
     lambda0 = ra0*(std::numbers::pi_v<T>/static_cast<T>(180.0));
