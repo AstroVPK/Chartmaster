@@ -56,9 +56,29 @@ CartesianPoint<T> LambertConformal<T, ra0, dec0, dec1, dec2>::project(CelestialP
     return CartesianPoint(x, y);
 }
 
-// template <typename T>
-// class Mercator {
-// };
+template <typename T, T ra0 = static_cast<T>(0.0)>
+class Mercator {
+    private:
+        T lambda0;
+    public:
+        Mercator();
+
+        CartesianPoint<T> project(CelestialPoint<T> const pt);
+};
+
+template <typename T, T ra0>
+Mercator<T, ra0>::Mercator() {
+    lambda0 = ra0*(std::numbers::pi_v<T>/static_cast<T>(180.0));    
+}
+
+template <typename T, T ra0>
+CartesianPoint<T> Mercator<T, ra0>::project(CelestialPoint<T> const pt) {
+    T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
+    T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
+    T x = ra_radians - lambda0;
+    T y = std::log(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians));
+    return CartesianPoint(x, y);
+}
 
 template <typename T, typename P>
 class Projector : public P {

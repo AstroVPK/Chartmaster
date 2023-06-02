@@ -22,5 +22,9 @@ int main() {
 		Projector<float, LambertConformal<float, 0.0F, 50.0F, 30.0F, 70.0F>> proj;
 		CartesianPoint pt_xy = proj.project(pt);
 		cout << "x = " << pt_xy.x() << "; y = " << pt_xy.y() << endl;		
+	} else if (abs(dec) < 30) {
+		Projector<float, Mercator<float, 0.0F>> proj;
+		CartesianPoint pt_xy = proj.project(pt);
+		cout << "x = " << pt_xy.x() << "; y = " << pt_xy.y() << endl;		
 	}
 }
