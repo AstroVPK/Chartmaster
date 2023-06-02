@@ -1,7 +1,7 @@
 # Chartmaster
 Software for creating custom star charts
 
-Chartmaster, named after the superb Starmaster line of Dobsonian telecsopes, is software designed to help users
+Chartmaster, named after the superb Starmaster line of Dobsonian telescopes, is software designed to help users
 create custom star atlases. These star atlases can be used a guidebook in the field for discovering objects to
 observe. Unlike users of GoTo & PushTo telescopes, users of fully manual telescopes cannot predict, a priori, how
 easy or difficult it shall prove to be to star-hop to and find a given target. This makes the usage of pre-planned
