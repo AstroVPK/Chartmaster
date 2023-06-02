@@ -23,9 +23,10 @@ PolarPoint<T> Stereographic<T>::project(CelestialPoint<T> const pt) const {
     return PolarPoint(r, theta);
 }
 
-template <typename T>
+template <typename T, T fakor>
 class LambertConformal {
     private:
+        T Fakor;
         T lambda0, phi0, phi1, phi2, n, F, rho0;
     public:
         LambertConformal(T ra0, T dec0, T dec1, T dec2);
@@ -37,9 +38,9 @@ class LambertConformal {
         CartesianPoint<T> project(CelestialPoint<T> const pt);
 };
 
-
-template <typename T>
-LambertConformal<T>::LambertConformal(T ra0, T dec0, T dec1, T dec2) {
+template <typename T, T fakor>
+LambertConformal<T, fakor>::LambertConformal(T ra0, T dec0, T dec1, T dec2) {
+    Fakor = fakor;
     lambda0 = ra0*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     phi0 = dec0*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     phi1 = dec1*(std::numbers::pi_v<T>/static_cast<T>(180.0));
@@ -51,8 +52,8 @@ LambertConformal<T>::LambertConformal(T ra0, T dec0, T dec1, T dec2) {
     rho0 = F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi1), n);
 }
 
-template <typename T>
-CartesianPoint<T> LambertConformal<T>::project(CelestialPoint<T> const pt) {
+template <typename T, T fakor>
+CartesianPoint<T> LambertConformal<T, fakor>::project(CelestialPoint<T> const pt) {
     T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T rho = F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians), n);
