@@ -23,7 +23,7 @@ class PolarPoint {
 template <typename T>
 PolarPoint<T>::PolarPoint() {
     R = static_cast<T>(0.0);
-    theta = static_cast<T>(0.0);
+    Theta = static_cast<T>(0.0);
 }
 
 template <typename T>
