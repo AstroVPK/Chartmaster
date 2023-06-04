@@ -39,9 +39,9 @@ namespace coordinates {
             template <typename I>
             std::tuple<I, I, T> deg_arcmin_arcsec() const;
 
-            const Dec<T> & operator+=(Dec<T> const & dec);
+            Dec<T> & operator+=(Dec<T> const & dec);
 
-            const Dec<T> & operator-=(Dec<T> const & dec);
+            Dec<T> & operator-=(Dec<T> const & dec);
 
     };
 
@@ -91,21 +91,23 @@ namespace coordinates {
     }
 
     template <typename T>
-    const Dec<T> & coordinates::Dec<T>::operator+=(Dec<T> const & dec) {
+    Dec<T> & coordinates::Dec<T>::operator+=(Dec<T> const & dec) {
         T value = this->val + dec.value();
         if (value < static_cast<T>(-90.0) || value > static_cast<T>(90.0)) {
             throw std::out_of_range("Declination value out-of-bounds");
         }
         this->val = value;
+        return *this;
     }
 
     template <typename T>
-    const Dec<T> & coordinates::Dec<T>::operator-=(Dec<T> const & dec) {
+    Dec<T> & coordinates::Dec<T>::operator-=(Dec<T> const & dec) {
         T value = this->val - dec.value();
         if (value < static_cast<T>(-90.0) || value > static_cast<T>(90.0)) {
             throw std::out_of_range("Declination value out-of-bounds");
         }
         this->val = value;
+        return *this;
     }
 
     template <typename T>
@@ -117,12 +119,16 @@ namespace coordinates {
 
     template <typename T1, typename T2>
     const Dec<typename std::common_type<T1, T2>::type> operator+(const Dec<T1>& dec1, const Dec<T2>& dec2) {
-        return Dec<typename std::common_type<T1, T2>::type>(static_cast<typename std::common_type<T1, T2>::type>(dec1.value()) + static_cast<typename std::common_type<T1, T2>::type>(dec2.value()));
+        typename std::common_type<T1, T2>::type res_degree = static_cast<typename std::common_type<T1, T2>::type>(dec1.value()) + static_cast<typename std::common_type<T1, T2>::type>(dec2.value());
+        Dec<typename std::common_type<T1, T2>::type> res{res_degree};
+        return res;
     }
 
     template <typename T1, typename T2>
     const Dec<typename std::common_type<T1, T2>::type> operator-(const Dec<T1>& dec1, const Dec<T2>& dec2) {
-        return Dec<typename std::common_type<T1, T2>::type>(static_cast<typename std::common_type<T1, T2>::type>(dec1.value()) - static_cast<typename std::common_type<T1, T2>::type>(dec2.value()));
+        typename std::common_type<T1, T2>::type res_degree = static_cast<typename std::common_type<T1, T2>::type>(dec1.value()) - static_cast<typename std::common_type<T1, T2>::type>(dec2.value());
+        Dec<typename std::common_type<T1, T2>::type> res{res_degree};
+        return res;
     }
 
 }

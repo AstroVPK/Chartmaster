@@ -48,11 +48,11 @@ namespace coordinates {
             std::tuple<I, I, T> hour_min_sec() const;
 
             template <typename I>
-            std::tuple<I, I, T> degree_arcmin_arcsec() const;
+            std::tuple<I, I, T> deg_arcmin_arcsec() const;
 
-            const RA<T> & operator+=(RA<T> const & ra);
+            RA<T> & operator+=(RA<T> const & ra);
 
-            const RA<T> & operator-=(RA<T> const & ra);
+            RA<T> & operator-=(RA<T> const & ra);
 
     };
 
@@ -131,13 +131,15 @@ namespace coordinates {
     }
 
     template <typename T>
-    const RA<T> & coordinates::RA<T>::operator+=(RA<T> const & ra) {
+    RA<T> & coordinates::RA<T>::operator+=(RA<T> const & ra) {
         this->val = mod((this->val + ra.value()), static_cast<T>(360.0));
+        return *this;
     }
 
     template <typename T>
-    const RA<T> & coordinates::RA<T>::operator-=(RA<T> const & ra) {
+    RA<T> & coordinates::RA<T>::operator-=(RA<T> const & ra) {
         this->val = mod((this->val - ra.value()), static_cast<T>(360.0));
+        return *this;
     }
 
     template <typename T>
@@ -149,12 +151,18 @@ namespace coordinates {
 
     template <typename T1, typename T2>
     const RA<typename std::common_type<T1, T2>::type> operator+(const RA<T1>& ra1, const RA<T2>& ra2) {
-        return RA<typename std::common_type<T1, T2>::type>(static_cast<typename std::common_type<T1, T2>::type>(ra1.value()) + static_cast<typename std::common_type<T1, T2>::type>(ra2.value()));
+        typename std::common_type<T1, T2>::type res_degree = static_cast<typename std::common_type<T1, T2>::type>(ra1.value()) + static_cast<typename std::common_type<T1, T2>::type>(ra2.value());
+        typename std::common_type<T1, T2>::type res_hour = res_degree/static_cast<typename std::common_type<T1, T2>::type>(15.0);
+        RA<typename std::common_type<T1, T2>::type> res{res_hour};
+        return res;
     }
 
     template <typename T1, typename T2>
     const RA<typename std::common_type<T1, T2>::type> operator-(const RA<T1>& ra1, const RA<T2>& ra2) {
-        return RA<typename std::common_type<T1, T2>::type>(static_cast<typename std::common_type<T1, T2>::type>(ra1.value()) - static_cast<typename std::common_type<T1, T2>::type>(ra2.value()));
+        typename std::common_type<T1, T2>::type res_degree = static_cast<typename std::common_type<T1, T2>::type>(ra1.value()) - static_cast<typename std::common_type<T1, T2>::type>(ra2.value());
+        typename std::common_type<T1, T2>::type res_hour = res_degree/static_cast<typename std::common_type<T1, T2>::type>(15.0);
+        RA<typename std::common_type<T1, T2>::type> res{res_hour};
+        return res;
     }
 
 }
