@@ -3,6 +3,7 @@
 
 #include "ra.hpp"
 #include "dec.hpp"
+#include "point.hpp"
 
 
 namespace py = pybind11;
@@ -83,7 +84,17 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def("__add__", [](const coordinates::Dec<T> &dec2, const coordinates::Dec<T> &dec1) {return dec2 + dec1;}) \
 	.def("__radd__", [](const coordinates::Dec<T> &dec2, const coordinates::Dec<T> &dec1) {return dec1 + dec2;}) \
 	.def("__sub__", [](const coordinates::Dec<T> &dec2, const coordinates::Dec<T> &dec1) {return dec2 - dec1;}) \
-	.def("__rsub__", [](const coordinates::Dec<T> &dec2, const coordinates::Dec<T> &dec1) {return dec1 - dec2;});
+	.def("__rsub__", [](const coordinates::Dec<T> &dec2, const coordinates::Dec<T> &dec1) {return dec1 - dec2;});\
+	py::class_<CelestialPoint<T>>(m, #S "CelestialPoint") \
+	.def(py::init<>()) \
+	.def(py::init<I, I, T, I, I, T>()) \
+	.def(py::init<I, T, I, T>()) \
+	.def(py::init<T, I, T>()) \
+	.def(py::init<I, T, T>()) \
+	.def(py::init<T, T>()) \
+	.def(py::init<coordinates::RA<T>, coordinates::Dec<T>>()) \
+	.def("RA", &CelestialPoint<T>::RA) \
+	.def("Dec", &CelestialPoint<T>::Dec);
 
 
 PYBIND11_MODULE(point, m) {
