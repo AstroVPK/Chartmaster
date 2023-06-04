@@ -24,7 +24,7 @@ namespace coordinates {
             template <typename I>
             RA(I hour, T min) : RA(hour, 0, static_cast<T>(60.0)*min) {};
 
-            RA(T hour) : RA(0, 0, static_cast<T>(3600.0)*hour){};
+            RA(T hour) : RA(0, 0, static_cast<T>(3600.0)*hour) {};
 
             T value() const {return val;};
 

@@ -62,28 +62,39 @@ CartesianPoint<T>::CartesianPoint(T x, T y) {
 template <typename T>
 class CelestialPoint {
     private:
-        coordinates::RA<T> ra;
-        coordinates::Dec<T> dec;
+        coordinates::RA<T> ra_val;
+        coordinates::Dec<T> dec_val;
     public:
         CelestialPoint();
 
-        CelestialPoint(T hour, T deg);
+        template <typename I>
+        CelestialPoint(I hour, I min, T sec, I deg, I arcmin, T arcsec);
 
-        //CelestialPoint(RA<T> ra, Dec<T> dec);
+        template <typename I>
+        CelestialPoint(I hour, T min, I deg, T arcmin) : CelestialPoint(hour, 0, static_cast<T>(60.0)*min, deg, 0, static_cast<T>(60.0)*arcmin) {};
 
-        T const RA() const {return ra.value();};
+        template <typename I>
+        CelestialPoint(T hour, I deg, T arcmin) : CelestialPoint(0, 0, static_cast<T>(3600.0)*hour, deg, 0, static_cast<T>(60.0)*arcmin) {};
 
-        T const Dec() const {return dec.value();};
+        template <typename I>
+        CelestialPoint(I hour, T min, T deg) : CelestialPoint(hour, 0, static_cast<T>(60.0)*min, 0, 0, static_cast<T>(3600.0)*deg) {};
+
+        CelestialPoint(coordinates::RA<T> ra, coordinates::Dec<T> dec) {ra_val = ra; dec_val = dec;};
+
+        T const RA() const {return ra_val.value();};
+
+        T const Dec() const {return dec_val.value();};
 };
 
 template <typename T>
 CelestialPoint<T>::CelestialPoint() {
-    ra = coordinates::RA<T>{static_cast<T>(0.0)};
-    dec = coordinates::Dec<T>{static_cast<T>(0.0)};
+    ra_val = coordinates::RA<T>{static_cast<T>(0.0)};
+    dec_val = coordinates::Dec<T>{static_cast<T>(0.0)};
 }
 
 template <typename T>
-CelestialPoint<T>::CelestialPoint(T hour, T deg) {
-    ra = coordinates::RA<T>{hour};
-    dec = coordinates::Dec<T>{deg};
+template <typename I> 
+CelestialPoint<T>::CelestialPoint(I hour, I min, T sec, I deg, I arcmin, T arcsec) {
+    ra_val = coordinates::RA<T>{hour, min, sec};
+    dec_val = coordinates::Dec<T>{deg, arcmin, arcsec};
 }

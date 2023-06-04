@@ -1,3 +1,5 @@
 .sconsign.*
 *.o
 bin/*
+*.so
+__pycache__
