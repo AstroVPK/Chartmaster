@@ -50,7 +50,7 @@ namespace coordinates {
     Dec<T>::Dec(I deg, I arcmin, T arcsec) {
         static_assert(std::is_integral<I>::value, "Integral type required!");
         static_assert(std::is_floating_point<T>::value, "Floating point type required!");
-        T value = static_cast<T>(deg + arcmin/static_cast<T>(60.0)) + arcsec/static_cast<T>(3600.0);
+        T value = std::copysign(static_cast<T>(std::fabs(deg) + arcmin/static_cast<T>(60.0)) + arcsec/static_cast<T>(3600.0), deg);
         if (value < static_cast<T>(-90.0) || value > static_cast<T>(90.0)) {
             throw std::out_of_range("Declination value out-of-bounds");
         }

@@ -61,7 +61,10 @@ namespace coordinates {
     RA<T>::RA(I hour, I min, T sec) {
         static_assert(std::is_integral<I>::value, "Integral type required!");
         static_assert(std::is_floating_point<T>::value, "Floating point type required!");
-        val = mod(static_cast<T>(15.0)*(static_cast<T>(hour) + static_cast<T>(min)/static_cast<T>(60.0) + sec/static_cast<T>(3600.0)), static_cast<T>(360.0));
+        val = std::fmod(static_cast<T>(15.0)*std::copysign(std::fabs(hour) + static_cast<T>(min)/static_cast<T>(60.0) + sec/static_cast<T>(3600.0), hour), static_cast<T>(360.0));
+        if (val < static_cast<T>(0.0)) {
+            val += static_cast<T>(360.0);
+        }
     }
 
     template <typename T>
@@ -132,7 +135,7 @@ namespace coordinates {
 
     template <typename T>
     RA<T> & coordinates::RA<T>::operator+=(RA<T> const & ra) {
-        this->val = mod((this->val + ra.value()), static_cast<T>(360.0));
+        this->val = std::fmod((this->val + ra.value()), static_cast<T>(360.0));
         return *this;
     }
 
