@@ -96,8 +96,9 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def(py::init<I, T, T>())                                                                                        \
 	.def(py::init<T, T>())                                                                                           \
 	.def(py::init<coordinates::RA<T>, coordinates::Dec<T>>())                                                        \
-	.def("RA", &CelestialPoint<T>::RA)                                                                               \
-	.def("Dec", &CelestialPoint<T>::Dec);                                                                            \
+	.def("RA", &CelestialPoint<T, Stereographic<T>>::RA)                                                                               \
+	.def("Dec", &CelestialPoint<T, Stereographic<T>>::Dec);
+	.def("project", &CelestialPoint<T, Stereographic<T>>::project);                                                                          \
 	py::class_<CartesianPoint<T>>(m, #S "CartesianPoint")                                                            \
 	.def(py::init<>())                                                                                               \
 	.def(py::init<T, T>())                                                                                           \
@@ -116,7 +117,7 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def("project", &Projector<T, Stereographic<T>>::project);
 
 
-PYBIND11_MODULE(point, m) {
+PYBIND11_MODULE(chartmaster, m) {
 	DEFINE_RADEC(float, int, f)
 	DEFINE_RADEC(double, int, d)
 	DEFINE_RADEC(long double, int, )

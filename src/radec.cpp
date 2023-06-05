@@ -13,18 +13,17 @@ int main() {
 	cin >> ra;
 	cout << "dec: ";
 	cin >> dec;
-	CelestialPoint<float> pt{ra, dec};
 	if (abs(dec) >= 70.0) {
-		Projector<float, Stereographic<float>> proj;
-		PolarPoint<float> pt_rtheta = proj.project(pt);
+		CelestialPoint<float, Stereographic<float>> pt{ra, dec};
+		PolarPoint<float> pt_rtheta = pt.project();
 		cout << "r = " << pt_rtheta.r() << "; theta = " << pt_rtheta.theta() << endl;
-	} else if ((abs(dec) < 70) && (abs(dec) >= 30)) {
-		Projector<float, LambertConformal<float, 0.0F, 50.0F, 30.0F, 70.0F>> proj;
-		CartesianPoint<float> pt_xy = proj.project(pt);
+	}/* else if ((abs(dec) < 70) && (abs(dec) >= 30)) {
+		CelestialPoint<float, LambertConformal<float, 0.0F, 50.0F, 30.0F, 70.0F>> pt{ra, dec};
+		CartesianPoint<float> pt_xy = pt.project(pt);
 		cout << "x = " << pt_xy.x() << "; y = " << pt_xy.y() << endl;		
 	} else if (abs(dec) < 30) {
-		Projector<float, Mercator<float, 0.0F>> proj;
-		CartesianPoint<float> pt_xy = proj.project(pt);
+		CelestialPoint<float, Mercator<float, 0.0F>> pt{ra, dec};
+		CartesianPoint<float> pt_xy = pt.project(pt);
 		cout << "x = " << pt_xy.x() << "; y = " << pt_xy.y() << endl;		
-	}
+	}*/
 }

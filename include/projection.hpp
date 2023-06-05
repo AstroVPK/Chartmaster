@@ -5,24 +5,27 @@
 #include "ra.hpp"
 #include "dec.hpp"
 #include "point.hpp"
+#include "flatpoint.hpp"
 
 
-template <typename T>
+template <typename T, typename Point>
 class Stereographic {
     public:
         Stereographic() = default;
 
-        PolarPoint<T> project(CelestialPoint<T> const pt) const;
+        PolarPoint<T> project() const;
 };
 
-template <typename T>
-PolarPoint<T> Stereographic<T>::project(CelestialPoint<T> const pt) const {
+template <typename T, typename Point>
+PolarPoint<T> Stereographic<T, Point>::project() const {
+    Point & pt = static_cast<Point &>(*this);
     T theta = pt.RA();
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T r = static_cast<T>(2.0)*std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> - static_cast<T>(0.5)*dec_radians);
     return PolarPoint(r, theta);
 }
 
+/*
 template <typename T, T ra0 = static_cast<T>(0.0), T dec0 = static_cast<T>(50.0), T dec1 = static_cast<T>(30.0), T dec2 = static_cast<T>(70.0)>
 class LambertConformal {
     private:
@@ -30,7 +33,7 @@ class LambertConformal {
     public:
         LambertConformal();
 
-        CartesianPoint<T> project(CelestialPoint<T> const pt);
+        CartesianPoint<T> project(CelestialPoint<T, Projection> const pt);
 };
 
 template <typename T, T ra0, T dec0, T dec1, T dec2>
@@ -47,7 +50,7 @@ LambertConformal<T, ra0, dec0, dec1, dec2>::LambertConformal() {
 }
 
 template <typename T, T ra0, T dec0, T dec1, T dec2>
-CartesianPoint<T> LambertConformal<T, ra0, dec0, dec1, dec2>::project(CelestialPoint<T> const pt) {
+CartesianPoint<T> LambertConformal<T, ra0, dec0, dec1, dec2>::project(CelestialPoint<T, Projection> const pt) {
     T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T rho = F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians), n);
@@ -63,7 +66,7 @@ class Mercator {
     public:
         Mercator();
 
-        CartesianPoint<T> project(CelestialPoint<T> const pt);
+        CartesianPoint<T> project(CelestialPoint<T, Projection> const pt);
 };
 
 template <typename T, T ra0>
@@ -72,16 +75,11 @@ Mercator<T, ra0>::Mercator() {
 }
 
 template <typename T, T ra0>
-CartesianPoint<T> Mercator<T, ra0>::project(CelestialPoint<T> const pt) {
+CartesianPoint<T> Mercator<T, ra0>::project(CelestialPoint<T, Projection> const pt) {
     T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T x = ra_radians - lambda0;
     T y = std::log(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians));
     return CartesianPoint(x, y);
 }
-
-template <typename T, typename P>
-class Projector : public P {
-    private:
-        int x;
-};
+*/
