@@ -1,9 +1,12 @@
+#include <memory>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 
 #include "ra.hpp"
 #include "dec.hpp"
 #include "point.hpp"
+#include "projection.hpp"
 
 
 namespace py = pybind11;
@@ -104,7 +107,14 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def(py::init<>())                                                                                               \
 	.def(py::init<T, T>())                                                                                           \
 	.def("r", &PolarPoint<T>::r)                                                                                     \
-	.def("theta", &PolarPoint<T>::theta);
+	.def("theta", &PolarPoint<T>::theta);                                                                            \
+	py::class_<Stereographic<T>>(m, #S "Stereographic")                                                              \
+	.def(py::init())                                                                                                 \
+	.def("project", &Stereographic<T>::project);                                                                     \
+	py::class_<Projector<T, Stereographic<T>>, Stereographic<T>>(m, #S "StereographicProjector")                     \
+	.def(py::init())                                                                                                 \
+	.def("project", &Projector<T, Stereographic<T>>::project);
+
 
 PYBIND11_MODULE(point, m) {
 	DEFINE_RADEC(float, int, f)
