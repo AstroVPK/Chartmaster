@@ -116,7 +116,7 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def("project", &Projector<T, Stereographic<T, Lit>>::project);
 
 
-PYBIND11_MODULE(point, m) {
+PYBIND11_MODULE(chartmaster, m) {
 	DEFINE_RADEC(float, int, f, 1.0F)
 	DEFINE_RADEC(double, int, d, 1.0D)
 	DEFINE_RADEC(long double, int, , 1.0L)
