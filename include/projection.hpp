@@ -7,34 +7,42 @@
 #include "point.hpp"
 
 
-template <typename T>
+template <typename T, T scale>
 class Stereographic {
+    private:
+        T Scale;
     public:
-        Stereographic() = default;
+        Stereographic();
 
         PolarPoint<T> project(CelestialPoint<T> const pt) const;
 };
 
-template <typename T>
-PolarPoint<T> Stereographic<T>::project(CelestialPoint<T> const pt) const {
+template <typename T, T scale>
+Stereographic<T, scale>::Stereographic() {
+    Scale = scale;
+}
+
+template <typename T, T scale>
+PolarPoint<T> Stereographic<T, scale>::project(CelestialPoint<T> const pt) const {
     T theta = pt.RA();
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
-    T r = static_cast<T>(2.0)*std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> - static_cast<T>(0.5)*dec_radians);
+    T r = static_cast<T>(2.0)*Scale*std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> - static_cast<T>(0.5)*dec_radians);
     return PolarPoint(r, theta);
 }
 
-template <typename T, T ra0 = static_cast<T>(0.0), T dec0 = static_cast<T>(50.0), T dec1 = static_cast<T>(30.0), T dec2 = static_cast<T>(70.0)>
+template <typename T, T scale, T ra0 = static_cast<T>(0.0), T dec0 = static_cast<T>(50.0), T dec1 = static_cast<T>(30.0), T dec2 = static_cast<T>(70.0)>
 class LambertConformal {
     private:
-        T lambda0, phi0, phi1, phi2, n, F, rho0;
+        T Scale, lambda0, phi0, phi1, phi2, n, F, rho0;
     public:
         LambertConformal();
 
         CartesianPoint<T> project(CelestialPoint<T> const pt);
 };
 
-template <typename T, T ra0, T dec0, T dec1, T dec2>
-LambertConformal<T, ra0, dec0, dec1, dec2>::LambertConformal() {
+template <typename T, T scale, T ra0, T dec0, T dec1, T dec2>
+LambertConformal<T, scale, ra0, dec0, dec1, dec2>::LambertConformal() {
+    Scale = scale;
     lambda0 = ra0*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     phi0 = dec0*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     phi1 = dec1*(std::numbers::pi_v<T>/static_cast<T>(180.0));
@@ -43,40 +51,41 @@ LambertConformal<T, ra0, dec0, dec1, dec2>::LambertConformal() {
     T n_denom = std::log(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi2)/std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi1));
     n = n_numer/n_denom;
     F = (std::cos(phi1)*std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi1), n))/n;
-    rho0 = F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi1), n);
+    rho0 = Scale*F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*phi1), n);
 }
 
-template <typename T, T ra0, T dec0, T dec1, T dec2>
-CartesianPoint<T> LambertConformal<T, ra0, dec0, dec1, dec2>::project(CelestialPoint<T> const pt) {
+template <typename T, T scale, T ra0, T dec0, T dec1, T dec2>
+CartesianPoint<T> LambertConformal<T, scale, ra0, dec0, dec1, dec2>::project(CelestialPoint<T> const pt) {
     T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
-    T rho = F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians), n);
+    T rho = Scale*F/std::pow(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians), n);
     T x = rho*std::sin(n*(ra_radians - lambda0));
     T y = rho0 - rho*(std::cos(n*(ra_radians - lambda0)));
     return CartesianPoint(x, y);
 }
 
-template <typename T, T ra0 = static_cast<T>(0.0)>
+template <typename T, T scale, T ra0 = static_cast<T>(0.0)>
 class Mercator {
     private:
-        T lambda0;
+        T Scale, lambda0;
     public:
         Mercator();
 
         CartesianPoint<T> project(CelestialPoint<T> const pt);
 };
 
-template <typename T, T ra0>
-Mercator<T, ra0>::Mercator() {
+template <typename T, T scale, T ra0>
+Mercator<T, scale, ra0>::Mercator() {
+    Scale = scale;
     lambda0 = ra0*(std::numbers::pi_v<T>/static_cast<T>(180.0));    
 }
 
-template <typename T, T ra0>
-CartesianPoint<T> Mercator<T, ra0>::project(CelestialPoint<T> const pt) {
+template <typename T, T scale, T ra0>
+CartesianPoint<T> Mercator<T, scale, ra0>::project(CelestialPoint<T> const pt) {
     T ra_radians = pt.RA()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
     T dec_radians = pt.Dec()*(std::numbers::pi_v<T>/static_cast<T>(180.0));
-    T x = ra_radians - lambda0;
-    T y = std::log(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians));
+    T x = Scale*(ra_radians - lambda0);
+    T y = Scale*std::log(std::tan(static_cast<T>(0.25)*std::numbers::pi_v<T> + static_cast<T>(0.5)*dec_radians));
     return CartesianPoint(x, y);
 }
 

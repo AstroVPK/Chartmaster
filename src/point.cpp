@@ -52,7 +52,7 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 // }
 
 
-#define DEFINE_RADEC(T, I, S)                                                                                        \
+#define DEFINE_RADEC(T, I, S, Lit)                                                                                        \
 	py::class_<coordinates::RA<T>>(m, #S "RA")                                                                       \
 	.def(py::init<>())                                                                                               \
 	.def(py::init<I, I, T>())                                                                                        \
@@ -108,16 +108,16 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def(py::init<T, T>())                                                                                           \
 	.def("r", &PolarPoint<T>::r)                                                                                     \
 	.def("theta", &PolarPoint<T>::theta);                                                                            \
-	py::class_<Stereographic<T>>(m, #S "Stereographic")                                                              \
+	py::class_<Stereographic<T, Lit>>(m, #S "Stereographic")                                                              \
 	.def(py::init())                                                                                                 \
-	.def("project", &Stereographic<T>::project);                                                                     \
-	py::class_<Projector<T, Stereographic<T>>, Stereographic<T>>(m, #S "StereographicProjector")                     \
+	.def("project", &Stereographic<T, Lit>::project);                                                                     \
+	py::class_<Projector<T, Stereographic<T, Lit>>, Stereographic<T, Lit>>(m, #S "StereographicProjector")                     \
 	.def(py::init())                                                                                                 \
-	.def("project", &Projector<T, Stereographic<T>>::project);
+	.def("project", &Projector<T, Stereographic<T, Lit>>::project);
 
 
 PYBIND11_MODULE(point, m) {
-	DEFINE_RADEC(float, int, f)
-	DEFINE_RADEC(double, int, d)
-	DEFINE_RADEC(long double, int, )
+	DEFINE_RADEC(float, int, f, 1.0F)
+	DEFINE_RADEC(double, int, d, 1.0D)
+	DEFINE_RADEC(long double, int, , 1.0L)
 }
