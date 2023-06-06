@@ -108,10 +108,10 @@ scons: *** [lib/ra.cpython-38-x86_64-linux-gnu.so] Error 1
 	.def(py::init<T, T>())                                                                                           \
 	.def("r", &PolarPoint<T>::r)                                                                                     \
 	.def("theta", &PolarPoint<T>::theta);                                                                            \
-	py::class_<Stereographic<T, Lit>>(m, #S "Stereographic")                                                              \
+	py::class_<Stereographic<T, Lit>>(m, #S "Stereographic")                                                         \
 	.def(py::init())                                                                                                 \
-	.def("project", &Stereographic<T, Lit>::project);                                                                     \
-	py::class_<Projector<T, Stereographic<T, Lit>>, Stereographic<T, Lit>>(m, #S "StereographicProjector")                     \
+	.def("project", &Stereographic<T, Lit>::project);                                                                \
+	py::class_<Projector<T, Stereographic<T, Lit>>, Stereographic<T, Lit>>(m, #S "StereographicProjector")           \
 	.def(py::init())                                                                                                 \
 	.def("project", &Projector<T, Stereographic<T, Lit>>::project);
 

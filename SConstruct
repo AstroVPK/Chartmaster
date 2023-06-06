@@ -40,7 +40,7 @@ for header in headers:
 ActionStr += ' $SOURCE'
 ActionStr += ' -o $TARGET'
 
-libName = 'point'
+libName = 'chartmaster'
 libFile = os.path.join(srcDir, libName)
 libOut = os.path.join(libDir, libName)
 
